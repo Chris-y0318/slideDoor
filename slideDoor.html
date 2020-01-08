@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>滑动门组件</title>
+		<style type="text/css">
+			#box {
+				height: 477px;
+				border: 1px solid darkgray;
+				position: relative;
+				overflow: hidden;
+				margin: 50px auto;
+			}
+			img{
+				height: 477px;
+				float: left;
+				box-sizing: border-box;
+				border-left: 1px solid darkgray;
+				position: absolute;
+			}
+			#imgs{
+				width: 475px;
+				border-left: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box">
+			<img src="images/door1.png" alt="" id="imgs">
+			<img src="images/door2.png" alt="" class="imgs">
+			<img src="images/door3.png" alt="" class="imgs">
+			<img src="images/door4.png" alt="" class="imgs">
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	let oImg=document.getElementsByTagName("img");
+	let oBox=document.getElementById("box");
+	let imgWidth=oImg[0].offsetWidth;
+	let showWidth=160;
+	let boxWidth=imgWidth+showWidth*(oImg.length-1);
+	oBox.style.width=boxWidth+"px";
+	for (let i = 1, len = oImg.length; i < len; i++) {
+		oImg[i].pos = oImg[i].style.left = imgWidth + showWidth * (i - 1) + "px";
+	}
+	let translate=imgWidth-showWidth;
+	function openDoor(ele,translate){
+		let speed=8;
+		let timer=null;
+		let begin=parseInt(ele.pos);
+		let end=begin-translate;
+		timer=setInterval(function(){
+			ele.style.left=parseInt(ele.style.left)-speed+"px";
+			if (parseInt(ele.style.left)<=end) {
+				ele.style.left=end+"px";
+				clearInterval(timer);
+			}
+		},20)
+	}
+	function closeDoor(ele,translate){
+		let begin=parseInt(ele.pos) - translate;
+		let end=begin + translate;
+		let speed=8;
+		let timer=null;
+		timer=setInterval(function(){
+			ele.style.left=parseInt(ele.style.left)+speed+"px";
+			if (parseInt(ele.style.left)>=end) {
+				ele.style.left=end+"px";
+				clearInterval(timer);
+			}
+		},20)
+	}
+	for (let i=0,len=oImg.length;i<len;i++) {
+		(function(i){
+			oImg[i].onmouseover=function(){
+				for (let j=1;j<=i;j++) {
+					openDoor(oImg[j],translate);
+				}
+				for (let k=i+1;k<oImg.length;k++) {
+					closeDoor(oImg[k],translate);
+				}
+			}
+		}(i))  //自运行函数
+	}
+</script>
